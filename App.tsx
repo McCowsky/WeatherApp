@@ -26,6 +26,7 @@ export default function App() {
         >
           <Stack.Screen name="InitialSearch" component={SearchLocation} />
           <Stack.Screen name="FetchWeather" component={FetchWeather} />
+          <Stack.Screen name="Weather" component={Weather} />
 
           {/* <InitialSearch /> */}
         </Stack.Navigator>

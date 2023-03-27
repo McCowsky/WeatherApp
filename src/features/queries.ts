@@ -5,7 +5,7 @@ import {
   get5DaysWeather,
   getCurrentAirPollution,
 } from "./services";
-import { IGeocodes, IWeather } from "./types/types";
+import { IWeather5days, IGeocodes, IWeather } from "./types/types";
 
 export const useGetCityGeocodes = (city: string) => {
   return useQuery<IGeocodes, Error>(["cityGeocode", city], () => getCityGeocodes(city), {
@@ -14,7 +14,7 @@ export const useGetCityGeocodes = (city: string) => {
 };
 
 export const useGet5DaysWeather = (lat: number, lon: number) => {
-  return useQuery("5dayWeather", () => {
+  return useQuery<IWeather5days, Error>("5dayWeather", () => {
     return get5DaysWeather(lat, lon);
   });
 };

@@ -11,14 +11,15 @@ import {
 } from "react-native";
 import { IWeather, StackNavigation, WeatherParamList } from "../features/types/types";
 import { Button } from "@rneui/themed";
+import { RouteProp, useFocusEffect } from "@react-navigation/native";
+
 const Weather: React.FC<{
   navigation: StackNavigation;
-  weather: IWeather;
-}> = ({ navigation, weather }) => {
-  console.log(weather);
-
+  route: RouteProp<WeatherParamList>;
+}> = ({ navigation, route }) => {
+  const { weather } = route.params;
   return (
-    <View style={styles.container}>
+    <View style={styles.mainContainer}>
       <ImageBackground
         source={{
           uri: "https://i.imgur.com/B5sA1D8.png",
@@ -26,19 +27,41 @@ const Weather: React.FC<{
         resizeMode="cover"
         style={styles.image}
       >
-        <Text style={{ color: "white", fontSize: 34 }}>{weather.name}</Text>
-        <Text style={{ color: "white", fontSize: 96 }}>
-          {`${Math.round(weather.main.temp)}o`}
-        </Text>
-        <Text style={{ color: "white", fontSize: 96, lineHeight: 37 }}>o</Text>
-        <Text>{Math.round(weather.main.temp_max)}</Text>
-        <Text>{weather.main.temp_min}</Text>
-        <Text>{weather.main.feels_like}</Text>
+        <View style={styles.container}>
+          <Text style={{ color: "white", fontSize: 34 }}>{weather.name}</Text>
+          <View style={styles.tempContainer}>
+            <Text style={{ color: "white", fontSize: 96 }}>
+              {Math.round(weather.main.temp)}
+            </Text>
+            <Text style={{ color: "white", fontSize: 50, lineHeight: 80 }}>o</Text>
+          </View>
+          <Text style={{ color: "white", fontSize: 18 }}>
+            {weather.weather[0].description}
+          </Text>
+          <View style={styles.tempContainer}>
+            <Text style={{ color: "white", fontSize: 20 }}>{`H: ${Math.round(
+              weather.main.temp_max
+            )}`}</Text>
+            <Text style={{ color: "white", fontSize: 20 }}>{`L: ${Math.round(
+              weather.main.temp_min
+            )}`}</Text>
+          </View>
+          <Text>{weather.main.feels_like}</Text>
+        </View>
 
         <Button
-          title="Change location"
+          title="Change"
           onPress={() => {
             navigation.navigate("InitialSearch");
+          }}
+        />
+        <Button
+          title="refetch"
+          onPress={() => {
+            navigation.navigate("FetchWeather", {
+              lat: weather.coord.lat,
+              lon: weather.coord.lon,
+            });
           }}
         />
       </ImageBackground>
@@ -48,6 +71,13 @@ const Weather: React.FC<{
 
 export default Weather;
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  image: { flex: 1 },
+  mainContainer: { flex: 1 },
+  container: { flex: 1, alignItems: "center" },
+
+  tempContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "flex-start",
+  },
+  image: { flex: 1, alignItems: "center" },
 });

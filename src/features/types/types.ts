@@ -25,6 +25,13 @@ export type IWeather = {
   wind: {};
 };
 
+export type IWeather5days = {
+  city: { [key: string]: unknown };
+  cnt: number;
+  cod: string;
+  list: { [key: string]: unknown }[];
+};
+
 export type IGeocodes = IGeocode[];
 
 export type FetchWeatherParamList = {
@@ -32,7 +39,7 @@ export type FetchWeatherParamList = {
 };
 
 export type WeatherParamList = {
-  Weather: { lat: number; lon: number };
+  Weather: { weather: IWeather; weather5days: IWeather5days };
 };
 
 export type InitialSearchParamList = {

@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import {
   FetchWeatherParamList,
+  IWeather5days,
   IWeather,
   StackNavigation,
 } from "../features/types/types";
@@ -26,6 +27,7 @@ const FetchWeather: React.FC<{
   route: RouteProp<FetchWeatherParamList>;
 }> = ({ navigation, route }) => {
   const { lat, lon } = route.params;
+  console.log(lat);
 
   useEffect(
     useCallback(() => {
@@ -52,14 +54,26 @@ const FetchWeather: React.FC<{
     data: weather,
     isSuccess,
     isLoading,
+    refetch,
   }: UseQueryResult<IWeather, Error> = useGetWeather(lat, lon);
 
   const {
-    data: days5,
+    data: weather5days,
     isSuccess: days5isSuccess,
     isLoading: days5isLoading,
-  }: UseQueryResult = useGet5DaysWeather(lat, lon);
-  console.log(days5);
+    refetch: refetch5days,
+  }: UseQueryResult<IWeather5days, Error> = useGet5DaysWeather(lat, lon);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      if (refetch && refetch5days) {
+        refetch();
+        refetch5days();
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   if (isLoading || days5isLoading)
     return (
@@ -68,7 +82,7 @@ const FetchWeather: React.FC<{
       </View>
     );
   if (isSuccess && days5isSuccess) {
-    return <Weather navigation={navigation} weather={weather} />;
+    navigation.navigate("Weather", { weather: weather, weather5days: weather5days });
   }
 
   return <View></View>;

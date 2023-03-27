@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { useState, useEffect } from "react";
+import { StyleSheet, View, PermissionsAndroid } from "react-native";
 
 import { SearchBar } from "@rneui/themed";
 
@@ -10,6 +10,9 @@ import { useDebounce } from "../../hooks/useDebounce";
 import { StatusBar } from "react-native";
 import SearchItem from "./components/SearchItem";
 import { LinearGradient } from "expo-linear-gradient";
+import { Button } from "@rneui/themed";
+import Geolocation from "react-native-geolocation-service";
+import * as Location from "expo-location";
 
 const SearchLocation: React.FC<{ navigation: StackNavigation }> = ({ navigation }) => {
   const [city, setCity] = useState<string>("");
@@ -17,6 +20,8 @@ const SearchLocation: React.FC<{ navigation: StackNavigation }> = ({ navigation 
 
   const { data: locations, refetch }: UseQueryResult<IGeocodes, Error> =
     useGetCityGeocodes(debouncedCity);
+
+  console.log(locations);
 
   const handleChange = (text: string) => {
     const spaceReplaced = text.split(" ").join("+");
@@ -29,6 +34,29 @@ const SearchLocation: React.FC<{ navigation: StackNavigation }> = ({ navigation 
       self.findIndex((t) => t.name === value.name && t.country === value.country)
   );
 
+  const [location, setLocation] = useState<string>("");
+
+  const getLocation = () => {
+    setCity(location);
+  };
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      let regionName = await Location.reverseGeocodeAsync({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+      setLocation(regionName[0].city!);
+    })();
+  }, []);
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -37,6 +65,7 @@ const SearchLocation: React.FC<{ navigation: StackNavigation }> = ({ navigation 
         end={{ x: 1, y: 1 }}
         style={styles.linearGradient}
       >
+        <Button title="get loc" onPress={getLocation} />
         <View style={styles.subcontainer}>
           <SearchBar
             placeholder="Your city"
