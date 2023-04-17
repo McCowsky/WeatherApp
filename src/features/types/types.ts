@@ -1,8 +1,8 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export type IGeocode = {
   name: string;
-  local_names?: {};
+  local_names?: object;
   lat: number;
   lon: number;
   country: string;
@@ -22,14 +22,34 @@ export type IWeather = {
   timezone: number;
   visibility: number;
   weather: { description: string; icon: string; id: number; main: string }[];
-  wind: {};
+  wind: object;
 };
 
 export type IWeather5days = {
   city: { [key: string]: unknown };
   cnt: number;
   cod: string;
-  list: { [key: string]: unknown }[];
+  list: {
+    clouds: object;
+    dt: number;
+    dt_txt: string;
+    main: {
+      feels_like: number;
+      grnd_level: number;
+      humidity: number;
+      pressure: number;
+      sea_level: number;
+      temp: number;
+      temp_kf: number;
+      temp_max: number;
+      temp_min: number;
+    };
+    pop: number;
+    sys: object;
+    visibility: number;
+    weather: object[];
+    wind: object;
+  }[];
 };
 
 export type IGeocodes = IGeocode[];
@@ -46,8 +66,6 @@ export type InitialSearchParamList = {
   InitialSearch: undefined;
 };
 
-export type StackParamList = InitialSearchParamList &
-  FetchWeatherParamList &
-  WeatherParamList;
+export type StackParamList = InitialSearchParamList & FetchWeatherParamList & WeatherParamList;
 
 export type StackNavigation = NativeStackNavigationProp<StackParamList>;
