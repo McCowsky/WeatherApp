@@ -10,8 +10,8 @@ import { useDebounce } from '../../hooks/useDebounce';
 import { StatusBar } from 'react-native';
 import SearchItem from './components/SearchItem';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Button } from '@rneui/themed';
 import * as Location from 'expo-location';
+import { Icon } from '@rneui/themed';
 
 const SearchLocation: React.FC<{ navigation: StackNavigation }> = ({ navigation }) => {
   const [city, setCity] = useState<string>('');
@@ -55,11 +55,15 @@ const SearchLocation: React.FC<{ navigation: StackNavigation }> = ({ navigation 
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.linearGradient}>
-        <Button
-          title="get loc"
+        <Icon
+          containerStyle={{ paddingTop: 15 }}
+          color="white"
+          name="location-pin"
           onPress={() => {
             setCity(location);
           }}
+          size={40}
+          type="material"
         />
         <View style={styles.subcontainer}>
           <SearchBar

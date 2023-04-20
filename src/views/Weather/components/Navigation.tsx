@@ -1,27 +1,31 @@
 import { StyleSheet, View } from 'react-native';
-import { Button } from '@rneui/themed';
-
 import { IWeather, StackNavigation } from '../../../features/types/types';
+import { Icon } from '@rneui/themed';
 
 const Navigation: React.FC<{ navigation: StackNavigation; weather: IWeather }> = ({ navigation, weather }) => {
   return (
     <View style={styles.buttonContainer}>
-      <Button
-        style={styles.button}
-        title="Change"
-        onPress={() => {
-          navigation.navigate('InitialSearch');
-        }}
-      />
-      <Button
-        style={styles.button}
-        title="refetch"
+      <Icon
+        name="repeat"
+        type="font-awesome"
+        color="white"
         onPress={() => {
           navigation.navigate('FetchWeather', {
             lat: weather.coord.lat,
             lon: weather.coord.lon,
           });
         }}
+      />
+
+      <Icon
+        containerStyle={{}}
+        color="white"
+        name="location-pin"
+        onPress={() => {
+          navigation.navigate('InitialSearch');
+        }}
+        size={40}
+        type="material"
       />
     </View>
   );
@@ -30,13 +34,10 @@ const Navigation: React.FC<{ navigation: StackNavigation; weather: IWeather }> =
 export default Navigation;
 const styles = StyleSheet.create({
   buttonContainer: {
-    backgroundColor: 'red',
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-around',
-  },
-  button: {
-    backgroundColor: 'yellow',
-    flexBasis: '50%',
+    alignItems: 'center',
+    paddingBottom: 15,
   },
 });
